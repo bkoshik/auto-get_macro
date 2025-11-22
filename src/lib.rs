@@ -18,7 +18,7 @@ pub fn auto_get_derive(input: TokenStream) -> TokenStream {
         let f_type: &Type = &f.ty;
 
         quote! {
-            pub fn #f_name(&self) -> #f_type {
+            pub fn #f_name(&self) -> &#f_type {
                 &self.#f_name
             }
         }
