@@ -35,9 +35,10 @@ pub fn auto_getters(input: TokenStream) -> TokenStream {
 #[proc_macro_attribute]
 pub fn optional(_attr: TokenStream, item: TokenStream) -> TokenStream {
     let input: ItemStruct = parse_macro_input!(item as ItemStruct);
+
     let name: Ident = input.ident;
     let vis: &Visibility = &input.vis;
-
+    let attrs: Vec<_> = input.attrs.iter().filter(|attr| !attr.path().is_ident("optional")).collect();
     let optional_fields: Vec<_> = input.fields.iter().map(|f| {
         let f_name: &Ident = f.ident.as_ref().unwrap();
         let f_type: &Type = &f.ty;
@@ -65,6 +66,7 @@ pub fn optional(_attr: TokenStream, item: TokenStream) -> TokenStream {
     }).collect();
 
     let output: TokenStream = quote! {
+        #(#attrs)*
         #vis struct #name {
             #(#optional_fields),*
         }
