@@ -30,5 +30,5 @@ pub fn auto_get_derive(input: TokenStream) -> TokenStream {
         }
     }.into();
 
-    TokenStream::from(expanded)
+    expanded
 }
