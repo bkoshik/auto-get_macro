@@ -180,7 +180,7 @@ pub fn optional(_attr: TokenStream, item: TokenStream) -> TokenStream {
                 let f_type: &Type = &f.ty;
 
                 quote! {
-                    Option<&f_type>
+                    Option<&#f_type>
                 }
             }).collect();
 

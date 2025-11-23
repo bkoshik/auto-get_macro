@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## [1.2.1]
+
+### Fixed
+
+- Fix type in `#[optional]` macro Unnamed match from `&f_type` to `&#f_type`
+
 ## [1.2.0]
 
 ### Added
