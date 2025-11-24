@@ -39,9 +39,11 @@
 
 mod auto_getters;
 mod optional;
+mod builder;
 
 use proc_macro::TokenStream;
 use crate::auto_getters::auto_getters_impl;
+use crate::builder::builder_impl;
 use crate::optional::optional_impl;
 
 /// Automatically generates ***getter methods*** only for **Named Structures**
@@ -84,7 +86,7 @@ pub fn auto_getters(input: TokenStream) -> TokenStream {
 /// Makes all fields of **Named/Unnamed Structures** optional
 ///
 /// Structure`s fields accept attributes:
-/// - `#[except]` for leave as is
+/// - `#[optional(except)]` for leave as is
 ///
 /// # Example
 ///
@@ -114,4 +116,75 @@ pub fn auto_getters(input: TokenStream) -> TokenStream {
 #[proc_macro_attribute]
 pub fn optional(_attr: TokenStream, item: TokenStream) -> TokenStream {
     optional_impl(_attr, item)
+}
+
+/// Adds builder for **Named Structures**
+///
+/// # Example
+///
+/// ```
+/// use fast_struct::Builder;
+///
+/// #[derive(Builder)]
+/// pub struct Foo {
+///     bar: bool,
+///     baz: String,
+///     qux: i16,
+/// }
+/// ```
+///
+/// will generate:
+///
+/// ```
+/// pub struct Foo {
+///     bar: bool,
+///     baz: String,
+///     qux: i16,
+/// }
+///
+/// #[derive(Debug)]
+/// pub enum FooBuilderError { BarNotFound, BazNotFound, QuxNotFound }
+///
+/// impl std::fmt::Display for FooBuilderError {
+///     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+///         write!(f, "{}", self)
+///     }
+/// }
+///
+/// impl std::error::Error for FooBuilderError {}
+///
+/// impl Foo {
+///     pub fn builder() -> FooBuilder {
+///         FooBuilder::default()
+///     }
+/// }
+///
+/// #[derive(Default, Clone)]
+/// pub struct FooBuilder {
+///     bar: Option<bool>,
+///     baz: Option<String>,
+///     qux: Option<i16>,
+/// }
+///
+/// impl FooBuilder {
+///     pub fn bar<T: Into<bool>>(&mut self, value: T) -> &mut Self {
+///         self.bar = Some(value.into());
+///
+///         self
+///     }
+///     pub fn baz<T: Into<String>>(&mut self, value: T) -> &mut Self {
+///         self.baz = Some(value.into());
+///
+///         self
+///     }
+///     pub fn qux<T: Into<i16>>(&mut self, value: T) -> &mut Self {
+///         self.qux = Some(value.into());
+///
+///         self
+///     }
+/// }
+/// ```
+#[proc_macro_derive(Builder)]
+pub fn builder(input: TokenStream) -> TokenStream {
+    builder_impl(input)
 }

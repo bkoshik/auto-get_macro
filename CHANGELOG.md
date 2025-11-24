@@ -1,5 +1,15 @@
 # CHANGELOG
 
+#[Unreleased]
+
+### Added
+
+- Add `#[derive(Builder)]` procedural macro
+
+### Fixed
+
+- Returned `#[except]` attribute in `#[optional]` as `#[optional(except)]` 
+
 ## [1.2.1]
 
 ### Fixed
